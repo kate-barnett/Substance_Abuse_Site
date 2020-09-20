@@ -1,6 +1,24 @@
-header
+#intro
 {color:cadetblue;}
 body
 {background-color: beige;}
+#BannerKentucky
+{color:darkblue; width:inherit;height:inherit; border-bottom: 5px; padding-bottom: 5px; border-bottom-color: darkblue; border-bottom-style: solid; border-top: 5px; border-top-color: darkblue; border-top-style: solid; padding-top: 5px;}
 p
-{color:darkblue; width:300px;height: 100px;}
+{color:darkblue}
+a
+{color:darkblue}
+#WhyHeader
+{color:cadetblue;}
+#introp
+{width:inherit;height: inherit; border-bottom: 30px; padding-bottom: 5px; border-bottom-color: darkblue; border-bottom-style: double; border-top: 30px; border-top-color: darkblue; border-top-style: double; padding-top: 5px;}
+#FaceCare
+{color: darkblue; text-decoration: underline; text-decoration-color: darkblue;}
+#resource1
+{color: black;}
+#resource2
+{color: black;}
+#resource3
+{color: black;}
+#resource4
+{color: black;}
