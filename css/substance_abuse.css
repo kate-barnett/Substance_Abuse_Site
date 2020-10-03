@@ -24,3 +24,19 @@ a
 {color: black;}
 svg
 {color:crimson;}
+#tooltip
+{
+    position: absolute;
+    width:auto;
+    height:auto;
+    color:black;
+}
+.hidden
+{ 
+display: none;
+    
+}
+.off,.fade
+{
+    opacity:.1;
+}
