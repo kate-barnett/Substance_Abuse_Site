@@ -23,10 +23,23 @@ var drawLines = function(overdoseData,target,
         .append("g")
         .classed("line",true)
         .attr("fill","none")
-        .attr("stroke","red")
+        .attr("stroke","black")
+    .on("mouseenter", function(overdoseData)
+            {
+                var xPos= d3.event.pageX;
+                var yPos=
+                d3.event.pageY;
+            
+        d3.select("#tooltip")
+            .classed("hidden", false)
+            .style("top",yPos+"px")
+            .style("left",xPos+"px")
+            .text(overdoseData.total_number)
+            
+})
     
     d3.select("#graph1")    
-    .select("#graph")
+    .select(".graph")
     .append("path")
         .datum(overdoseData)
         .attr("d",lineGenerator);
@@ -296,86 +309,71 @@ var drawLabels2 = function(graph,margins)
         .attr("transform", "translate(,"+(margins.top+(graph.height))+")")
     
 }
-var initGraph3= function (compareData)
+var initGraph3 = function(compareData)
 {
-   var screen = {width: 800, height: 250}
     
-    var margins = {left:80, right:5, top:70, bottom: 80}
-    
-    
-    
-    var graph3 = 
-        {
-            width:screen.width-margins.left-margins.right,
-            height:screen.height/1.2- margins.bottom
-        }
-    
- 
-    
-    d3.select("#graph3")
-        .attr("width", screen.width)
-        .attr("height",screen.height)
-            
-    
-    var target = d3.select("#graph3")
-                .append ("g")
-                .attr("transform", "translate (" + margins.left + ", "+ margins.top +")");
-    
-    var xScale= d3.scaleBand()
-        .domain(["2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018"])
-        .range([0, graph3.width])
-        .paddingInner(.10)
-    
-    var yScale= d3.scaleLinear()
-        .domain([0,900])
-        .range([graph3.height,0])
-    
-    var colorScale= d3.scaleOrdinal()
-        .range(["red","pink","purple","palevioletred"]);
-    
-  
-
- drawAxis3(graph3,margins,xScale,yScale);
-    
-    var g0 = target.append("g");
-    drawBars3(compareData,g0,graph3,xScale,yScale, colorScale);
-      var g1 = target.append("g");
-    drawBars3(compareData,g1,graph3,xScale,yScale, colorScale);
-    
-    drawLabels3(graph3,margins, target);
+    var screen = {width:800, height:250};
     
    
+    var margins = {top:20,bottom:20,left:80,right:5};
+    
+   
+    var graph = 
+    {
+        width:screen.width-margins.left-margins.right,
+        height:screen.height/1.2-margins.top-margins.bottom,
+    }
+    
+    
+    d3.select("#graph3")
+        .attr("width",screen.width)
+        .attr("height",screen.height)
+    
+    
+    var target = d3.select("#graph3")
+        .append("g")
+        .classed("graph",true)
+        .attr("transform","translate("+margins.left+","+
+             margins.top+")");
+     
+    var xScale = d3.scaleLinear()
+        .domain([2000,2019])
+        .range([0,graph.width])
+ 
+   
 
+                      
+    var yScale = d3.scaleLinear()
+        .domain([0,1500])
+        .range([graph.height,0])
+    
+    
+    drawAxis3(graph,margins,xScale,yScale);
+    
+    drawLines2(compareData,target,xScale,yScale);
+     
+    
+    drawLabels3(graph,margins, target);
+    
+    drawPlot2(compareData,target,xScale,yScale)
 }
-
-var drawBars3= function(compareData,target,graphDim,xScale,yScale, colorScale)
+var drawLines2 = function(compareData,target,
+              xScale,yScale)
 {
-    target.selectAll("rect")
+    
+    var lineGenerator = d3.line()
+        .x(function(compareData,i) { return xScale(i);})
+        .y(function(compareData)   { return yScale(compareData);})
+    
+    
+    var lines = d3.select("#graph3")
+        .select(".graph")
+        .selectAll("g")
         .data(compareData)
         .enter()
-        .append("rect")
-        .attr("x", function (compareData)
-              {
-                return xScale(compareData.year);
-    })
-        .attr("y", function (Data)
-              { 
-        
-                  return yScale (Data.overdose_deaths);
-    })
-    
-        .attr("width",xScale.bandwidth)
-        .attr("height", function(Data)
-              { 
-               return graphDim.height-yScale(Data.overdose_deaths)
-    })
-        .attr("fill", function(number)
-              { 
-        
-              return colorScale(number. year);
-    })
-    
-     
+        .append("g")
+        .classed("line",true)
+        .attr("fill","none")
         .on("mouseenter", function(compareData)
             {
                 var xPos= d3.event.pageX;
@@ -387,12 +385,69 @@ var drawBars3= function(compareData,target,graphDim,xScale,yScale, colorScale)
             .style("top",yPos+"px")
             .style("left",xPos+"px")
             .text(compareData.overdose_deaths)
-            
-})
+            .text(compareData.suicide_deaths)
+    
             
         
-
+    
+    lines.append("path")
+        .datum(function(compareData) 
+            { return compareData.overdose_deaths;})
+        .attr("d",lineGenerator);
+})
+   
+        lines.append("path")
+                .datum(function(compareData)
+                       {
+                return compareData.suicide_deaths
+    })
+                       
+    
+    
+    d3.select("#graph1")    
+    .select(".graph")
+    .append("path")
+        .datum(compareData)
+        .attr("d",lineGenerator);
 }
+var drawPlot2= function(compareData,target,xScale,yScale)
+{
+    target
+    .selectAll("circle")
+    .data(compareData)
+    .enter()
+    .append("circle")
+    .attr("cx", function(compareData)
+          {
+            return xScale(compareData.year);
+    })
+    .attr("cy", function (compareData)
+          {
+            return yScale(compareData.suicice_deaths)
+    })
+    .attr("cy", function(compareData)
+          {
+            return 
+            yScale(compareData.overdose_deaths)
+    .attr("r",3)
+    .on("mouseenter", function(compareData)
+            {
+                var xPos= d3.event.pageX;
+                var yPos=
+                d3.event.pageY;
+            
+        d3.select("#tooltip")
+            .classed("hidden", false)
+            .style("top",yPos+"px")
+            .style("left",xPos+"px")
+            .text(compareData.suicide_deaths)
+            .text(compareData.overdose_deaths)
+            
+})
+})
+}
+          
+    
 
 var drawAxis3 = function(graph3,margins,xScale,yScale)
 {
