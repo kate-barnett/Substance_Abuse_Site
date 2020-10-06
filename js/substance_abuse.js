@@ -6,56 +6,6 @@ var compareDataPromise= d3.csv("../csv/compareData.csv")
 
 var overdosePromise= d3.csv("../csv/overdoseData.csv")
 
-
-var initGraph = function(overdoseData)
-{
-    
-    var screen = {width:800, height:250};
-    
-   
-    var margins = {top:20,bottom:20,left:80,right:5};
-    
-   
-    var graph = 
-    {
-        width:screen.width-margins.left-margins.right,
-        height:screen.height/1.2-margins.top-margins.bottom,
-    }
-    
-    
-    d3.select("#graph1")
-        .attr("width",screen.width)
-        .attr("height",screen.height)
-    
-    
-    var target = d3.select("#graph1")
-        .append("g")
-        .classed("graph",true)
-        .attr("transform","translate("+margins.left+","+
-             margins.top+")");
-     
-    var xScale = d3.scaleLinear()
-        .domain([2000,2019])
-        .range([0,graph.width])
- 
-   
-    var highW = d3.max(overdoseData,function(overdoseData)
-    {   
-        return d3.max(overdoseData.total_number);
-    })
-                      
-    var yScale = d3.scaleLinear()
-        .domain([0,highW])
-        .range([graph.height,0])
-    
-    
-    drawAxis(graph,margins,xScale,yScale);
-    
-    drawLines(overdoseData,target,xScale,yScale);
-     
-    
-    drawLabels(graph,margins, target);
-}
 var drawLines = function(overdoseData,target,
               xScale,yScale)
 {
@@ -74,18 +24,44 @@ var drawLines = function(overdoseData,target,
         .classed("line",true)
         .attr("fill","none")
         .attr("stroke","red")
-        
-    lines.append("path")
+    
+    d3.select("#graph1")    
+    .select("#graph")
+    .append("path")
         .datum(overdoseData)
         .attr("d",lineGenerator);
 }
-           
-    var makeTranslateString= function (x,y)
-    { return "translate("+x+","+y+")";
-    }
-
-
-
+var drawPlot1= function(overdoseData,target,xScale,yScale)
+{
+    target
+    .selectAll("circle")
+    .data(overdoseData)
+    .enter()
+    .append("circle")
+    .attr("cx", function(overdoseData)
+          {
+            return xScale(overdoseData.year);
+    })
+    .attr("cy", function (overdoseData)
+          {
+            return yScale(overdoseData.total_number)
+    })
+    .attr("r",3)
+    .on("mouseenter", function(overdoseData)
+            {
+                var xPos= d3.event.pageX;
+                var yPos=
+                d3.event.pageY;
+            
+        d3.select("#tooltip")
+            .classed("hidden", false)
+            .style("top",yPos+"px")
+            .style("left",xPos+"px")
+            .text(overdoseData.total_number)
+            
+})
+}
+    
 var drawAxis = function(graph,margins,xScale,yScale)
 {
    var xAxis= d3.axisBottom(xScale);
@@ -127,7 +103,54 @@ var drawLabels = function(graph,margins)
         .attr("text-anchor","middle")
         .attr("transform","rotate(270)")
 }
+var initGraph = function(overdoseData)
+{
+    
+    var screen = {width:800, height:250};
+    
+   
+    var margins = {top:20,bottom:20,left:80,right:5};
+    
+   
+    var graph = 
+    {
+        width:screen.width-margins.left-margins.right,
+        height:screen.height/1.2-margins.top-margins.bottom,
+    }
+    
+    
+    d3.select("#graph1")
+        .attr("width",screen.width)
+        .attr("height",screen.height)
+    
+    
+    var target = d3.select("#graph1")
+        .append("g")
+        .classed("graph",true)
+        .attr("transform","translate("+margins.left+","+
+             margins.top+")");
+     
+    var xScale = d3.scaleLinear()
+        .domain([2000,2019])
+        .range([0,graph.width])
+ 
+   
 
+                      
+    var yScale = d3.scaleLinear()
+        .domain([0,1500])
+        .range([graph.height,0])
+    
+    
+    drawAxis(graph,margins,xScale,yScale);
+    
+    drawLines(overdoseData,target,xScale,yScale);
+     
+    
+    drawLabels(graph,margins, target);
+    
+    drawPlot1(overdoseData,target,xScale,yScale)
+}
 
 var initGraph2= function (ageGroup2)
 {
@@ -320,7 +343,8 @@ var initGraph3= function (compareData)
     drawBars3(compareData,g1,graph3,xScale,yScale, colorScale);
     
     drawLabels3(graph3,margins, target);
-    //drawLegend(graph,margins);
+    
+   
 
 }
 
