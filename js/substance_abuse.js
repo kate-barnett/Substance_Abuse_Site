@@ -7,90 +7,84 @@ var compareDataPromise= d3.csv("../csv/compareData.csv")
 var overdosePromise= d3.csv("../csv/overdoseData.csv")
 
 
-
-var initGraph= function (overdoseRates)
+var initGraph = function(overdoseData)
 {
-    var screen= {width: 800, height: 250}
     
-    var margins= {left:80, right:5, top:20, bottom: 20}
+    var screen = {width:800, height:250};
     
-    var graph= 
-        {
-            width:screen.width-margins. left-margins.right,
-            height:screen.height/1.2 - margins.top-margins.bottom
-        
-        }
+   
+    var margins = {top:20,bottom:20,left:80,right:5};
     
-    console.log(graph)
+   
+    var graph = 
+    {
+        width:screen.width-margins.left-margins.right,
+        height:screen.height/1.2-margins.top-margins.bottom,
+    }
+    
     
     d3.select("#graph1")
-        .attr("width", screen.width)
+        .attr("width",screen.width)
         .attr("height",screen.height)
-            
+    
     
     var target = d3.select("#graph1")
-                .append ("g")
-                .attr("transform", "translate (" + margins.left + ", "+ margins.top +")");
-    
-    var xScale= d3.scaleBand()
-        .domain(["2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018","2019"])
-        .range([0, graph.width])
-        .paddingInner(.05)
-    
-    var yScale= d3.scaleLinear()
-        .domain([0,1500])
+        .append("g")
+        .classed("graph",true)
+        .attr("transform","translate("+margins.left+","+
+             margins.top+")");
+     
+    var xScale = d3.scaleLinear()
+        .domain([2000,2019])
+        .range([0,graph.width])
+ 
+   
+    var highW = d3.max(overdoseData,function(overdoseData)
+    {   
+        return d3.max(overdoseData.total_number);
+    })
+                      
+    var yScale = d3.scaleLinear()
+        .domain([0,highW])
         .range([graph.height,0])
     
-  
-
+    
     drawAxis(graph,margins,xScale,yScale);
     
-    var g0 = target.append("g");
-    drawBars(overdoseRates,g0,graph,xScale,yScale);
-      var g1 = target.append("g");
-    drawBars(overdoseRates,g1,graph,xScale,yScale);
+    drawLines(overdoseData,target,xScale,yScale);
+     
     
     drawLabels(graph,margins, target);
-    //drawLegend(graph,margins);
-
 }
-
-var drawBars= function(overdoseRates,target,graphDim,xScale,yScale)
+var drawLines = function(overdoseData,target,
+              xScale,yScale)
 {
-    target.selectAll("rect")
-        .data(overdoseRates )
-        .enter()
-        .append("rect")
-        .attr("x", function (year)
-              {
-                return xScale(year.year);
-    })
-        .attr("y", function (year)
-              { 
-        
-                  return yScale (year.total_number);
-    })
     
-        .attr("width",xScale.bandwidth)
-        .attr("height", function(year)
-              { 
-               return graphDim.height-yScale(year.total_number)
-              })
-        .attr("fill", "red") .on("mouseenter", function(overdoseRate)
-            {
-                var xPos= d3.event.pageX;
-                var yPos=
-                d3.event.pageY;
-            
-        d3.select("#tooltip")
-            .classed("hidden", false)
-            .style("top",yPos+"px")
-            .style("left",xPos+"px")
-            .text(overdoseRate.total_number)
-})
+    var lineGenerator = d3.line()
+        .x(function(overdoseData)  { return xScale(overdoseData.year)
+        })
+        .y(function(overdoseData)   { return yScale(overdoseData.total_number)})
+    
+    
+    var lines = d3.select("#graph1")
+        .selectAll("g")
+        .data(overdoseData)
+        .enter()
+        .append("g")
+        .classed("line",true)
+        .attr("fill","none")
+        .attr("stroke","red")
         
-
+    lines.append("path")
+        .datum(overdoseData)
+        .attr("d",lineGenerator);
 }
+           
+    var makeTranslateString= function (x,y)
+    { return "translate("+x+","+y+")";
+    }
+
+
 
 var drawAxis = function(graph,margins,xScale,yScale)
 {
@@ -145,7 +139,7 @@ var initGraph2= function (ageGroup2)
     
     var graph2 = 
         {
-            width:screen.width-margins.left-margins.right,
+            width:screen.width/2-margins.left-margins.right,
             height:screen.height/1.2 - margins.bottom
         }
     
@@ -161,7 +155,7 @@ var initGraph2= function (ageGroup2)
                 .attr("transform", "translate (" + margins.left + ", "+ margins.top +")");
     
     var xScale= d3.scaleBand()
-        .domain(["12-17_Estimate","18-25_Estimate","18+_Estimate","26+_Estimate"])
+        .domain(["12-17_Estimate","18-25_Estimate"])
         .range([0, graph2.width])
         .paddingInner(.10)
     
@@ -170,7 +164,7 @@ var initGraph2= function (ageGroup2)
         .range([graph2.height,0])
     
     var colorScale= d3.scaleOrdinal()
-        .range(["red","pink","purple","palevioletred"]);
+        .range(["red","pink"]);
     
   
 
@@ -274,16 +268,16 @@ var drawLabels2 = function(graph,margins)
         .text("Age Group")
         .classed("label",true)
         .attr("text-anchor","middle")
-        .attr("x", margins.left+(graph2.width))
-        .attr("y", margins.top+graph2.height/1+(margins.bottom))
-        .attr("transform", "translate(450,"+(margins.top+(graph2.height/0.8))+")")
+        .attr("x", margins.left+(graph.width/2))
+        .attr("y", margins.top+graph.height/1.2+(margins.bottom))
+        .attr("transform", "translate(,"+(margins.top+(graph.height))+")")
     
 }
 var initGraph3= function (compareData)
 {
    var screen = {width: 800, height: 250}
     
-    var margins = {left:80, right:5, top:40, bottom: 60}
+    var margins = {left:80, right:5, top:70, bottom: 80}
     
     
     
@@ -325,7 +319,7 @@ var initGraph3= function (compareData)
       var g1 = target.append("g");
     drawBars3(compareData,g1,graph3,xScale,yScale, colorScale);
     
-    //drawLabels3(graph3,margins, target);
+    drawLabels3(graph3,margins, target);
     //drawLegend(graph,margins);
 
 }
@@ -341,7 +335,7 @@ var drawBars3= function(compareData,target,graphDim,xScale,yScale, colorScale)
                 return xScale(compareData.year);
     })
         .attr("y", function (Data)
-              { console.log(Data.overdose_deaths)
+              { 
         
                   return yScale (Data.overdose_deaths);
     })
@@ -356,6 +350,8 @@ var drawBars3= function(compareData,target,graphDim,xScale,yScale, colorScale)
         
               return colorScale(number. year);
     })
+    
+     
         .on("mouseenter", function(compareData)
             {
                 var xPos= d3.event.pageX;
@@ -367,6 +363,7 @@ var drawBars3= function(compareData,target,graphDim,xScale,yScale, colorScale)
             .style("top",yPos+"px")
             .style("left",xPos+"px")
             .text(compareData.overdose_deaths)
+            
 })
             
         
@@ -400,15 +397,15 @@ var drawLabels3 = function(graph,margins)
         .classed("labels",true)
         
     labels.append("text")
-        .text("Kentucky Substance Misuse by Age Group")
+        .text("Comparison of Suicide Mortality and Overdose Mortality")
         .classed("title",true)
         .attr("text-anchor","middle")
-        .attr("x",margins.left+(graph3.width/2))
-        .attr("y",margins.top/2)
+        .attr("x",margins.left+(graph.width/2.2))
+        .attr("y",margins.top/2.2)
      
     labels.append("g")
         .attr("transform","translate(20,"+ 
-              (margins.top+(graph3.height/2))+")")
+              (margins.top+(graph.height/2))+")")
         .append("text")
         .text("# of those using")
         .classed("label",true)
@@ -419,9 +416,9 @@ var drawLabels3 = function(graph,margins)
         .text("Age Group")
         .classed("label",true)
         .attr("text-anchor","middle")
-        .attr("x", margins.left+(initGraph3.width))
-        .attr("y", margins.top+graph3.height/1+(margins.bottom))
-        .attr("transform", "translate(450,"+(margins.top+(graph3.height/0.9))+")")
+        .attr("x", margins.left+(graph.width/2))
+        .attr("y", margins.top+graph.height/1.2+(margins.bottom/1.3))
+        .attr("transform", "translate(,"+(margins.top+(graph.height))+")")
     
 }
 var successFCN= function(values)

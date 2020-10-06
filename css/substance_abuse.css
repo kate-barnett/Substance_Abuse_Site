@@ -26,10 +26,16 @@ svg
 {color:crimson;}
 #tooltip
 {
-    position: absolute;
-    width:auto;
+    position:absolute;
+    width:29px;
     height:auto;
-    color:black;
+    padding:10px;
+    background-color:white;
+    border-radius:4px;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.4);
+    pointer-events:none;
+    color: black;
+    
 }
 .hidden
 { 
@@ -40,3 +46,25 @@ display: none;
 {
     opacity:.1;
 }
+#div1
+{
+float: left;
+ height: 33%;
+}
+#div2
+{ float:left;
+width:10%;
+    height:30%;
+}
+#div3
+{float: left;
+    width: 266px;
+    height: 40px;
+}
+path
+{
+    stroke:gray;
+    fill:none;
+    stroke-width:3;
+}
+    
