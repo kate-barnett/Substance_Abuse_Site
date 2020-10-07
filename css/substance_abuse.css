@@ -72,7 +72,7 @@ path
 }
 
 .heroin_treatment_admissions
-{ fill:orchid;
+{ fill: palevioletred;
 }
 #call
 {
@@ -101,5 +101,11 @@ path
     border-style:solid;
     border-color:maroon;
     padding: 10px;
+}
+path2
+{
+    stroke:gray;
+    fill:none;
+    stroke-width:3;
 }
     

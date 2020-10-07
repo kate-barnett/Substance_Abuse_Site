@@ -1,5 +1,5 @@
 var heroinComparePromise= d3.csv("../csv/HeroinCompare.csv")
-var initGraph4 = function(heroinCompare)
+var initGraph = function(heroinCompare)
 {
     
     var screen = {width:800, height:400};
@@ -38,21 +38,21 @@ var initGraph4 = function(heroinCompare)
         .range([graph.height,0])
     
     
-    drawAxis4(graph,margins,xScale,yScale);
+    drawAxis(graph,margins,xScale,yScale);
     
-    drawLines3(heroinCompare,target,xScale,yScale);
+    drawLines(heroinCompare,target,xScale,yScale);
      
     
-    drawLabels4(graph,margins, target);
+    drawLabels(graph,margins, target);
     
-    drawPlot3(heroinCompare,target,xScale,yScale)
+    drawPlot(heroinCompare,target,xScale,yScale)
     
-    drawLegend2(graph,margins)
+    drawLegend(graph,margins)
 }
-var drawLines3 = function(heroinCompare,target,
+var drawLines = function(heroinCompare,target,
               xScale,yScale)
 {
-    console.log(drawLegend2)
+   
     var lineGenerator1 = d3.line()
         .x(function(heroinCompare) { return xScale(heroinCompare.year);})
         .y(function(heroinCompare)   { return yScale(heroinCompare.ER_Heroin_VIsits);})
@@ -85,7 +85,7 @@ var drawLines3 = function(heroinCompare,target,
     
      d3.select("#graph4")    
     .select(".graph")
-    .append("path")
+    .append("path2")
         .datum(heroinCompare)
         .attr("d",lineGenerator2)
           .on("mouseenter", function(heroinCompare)
@@ -104,7 +104,7 @@ var drawLines3 = function(heroinCompare,target,
     
     
 }
-var drawPlot3= function(heroinCompare,target,xScale,yScale)
+var drawPlot= function(heroinCompare,target,xScale,yScale)
 {
      target.append("g")
     .selectAll("circle")
@@ -151,7 +151,7 @@ var drawPlot3= function(heroinCompare,target,xScale,yScale)
     })
     
     .attr("r",3)
-    .attr("fill","orchid")
+    .attr("fill","palevioletred")
     .on("mouseenter", function(heroinCompare)
             {
                 var xPos= d3.event.pageX;
@@ -169,7 +169,7 @@ var drawPlot3= function(heroinCompare,target,xScale,yScale)
 
     
 }
-var drawAxis4 = function(graph4,margins,xScale,yScale)
+var drawAxis = function(graph,margins,xScale,yScale)
 {
    var xAxis= d3.axisBottom(xScale);
    var yAxis= d3.axisLeft(yScale);
@@ -178,7 +178,7 @@ var drawAxis4 = function(graph4,margins,xScale,yScale)
         .append("g")
         
     axes.append("g")
-        .attr("transform", "translate("+margins.left+","+(margins.top+graph4.height/1)+")") 
+        .attr("transform", "translate("+margins.left+","+(margins.top+graph.height/1)+")") 
         
         .call(xAxis)
         
@@ -189,7 +189,7 @@ var drawAxis4 = function(graph4,margins,xScale,yScale)
 
 }
 
-var drawLabels4 = function(graph,margins)
+var drawLabels = function(graph,margins,target)
 {
         var labels = d3.select("#graph4")
         .append("g")
@@ -221,7 +221,7 @@ var drawLabels4 = function(graph,margins)
     
 }
 
-var drawLegend2 = function(graphDim,margins)
+var drawLegend = function(graphDim,margins)
 {
     var legend = d3.select("#graph4")
                     .append("g")
@@ -281,7 +281,7 @@ var successFCN= function(values)
    
      var heroinCompare= values[0];
     
-    initGraph4(values[0]);
+    initGraph(values[0]);
     
 }
 var failFCN= function(error)
