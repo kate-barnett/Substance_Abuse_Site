@@ -85,7 +85,7 @@ var drawLines = function(heroinCompare,target,
     
      d3.select("#graph4")    
     .select(".graph")
-    .append("path2")
+    .append("path")
         .datum(heroinCompare)
         .attr("d",lineGenerator2)
           .on("mouseenter", function(heroinCompare)
@@ -105,7 +105,7 @@ var drawLines = function(heroinCompare,target,
     
 }
 var drawPlot= function(heroinCompare,target,xScale,yScale)
-{
+{ 
      target.append("g")
     .selectAll("circle")
     .data(heroinCompare)
@@ -116,7 +116,7 @@ var drawPlot= function(heroinCompare,target,xScale,yScale)
             return xScale(heroinCompare.year);
     })
     .attr("cy", function (heroinCompare)
-          {
+          { 
             return yScale(heroinCompare.ER_Heroin_VIsits)
     })
     
@@ -279,9 +279,9 @@ var successFCN= function(values)
    
     console.log("values", values);
    
-     var heroinCompare= values[0];
+     var heroinCompare= values;
     
-    initGraph(values[0]);
+    initGraph(values);
     
 }
 var failFCN= function(error)

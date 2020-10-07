@@ -3,17 +3,17 @@
 body
 {background-color: lavenderblush;}
 #BannerKentucky
-{color:darkblue; width:inherit;height:inherit; border-bottom: 5px; padding-bottom: 5px; border-bottom-color: darkblue; border-bottom-style: solid; border-top: 5px; border-top-color: darkblue; border-top-style: solid; padding-top: 5px;}
+{color:palevioletred; width:inherit;height:inherit; border-bottom: 5px; padding-bottom: 5px; border-bottom-color: maroon; border-bottom-style: solid; border-top: 5px; border-top-color: maroon; border-top-style: solid; padding-top: 5px;}
 p
 {color:palevioletred}
 a
 {color:palevioletred}
 #WhyHeader
-{color:palevioletred;}
+{color:palevioletred; text-decoration: underline;}
 #introp
-{width:inherit;height: inherit; border-bottom: 30px; padding-bottom: 5px; border-bottom-color: darkblue; border-bottom-style: double; border-top: 30px; border-top-color: darkblue; border-top-style: double; padding-top: 5px;}
+{ border: 30px; padding: 5px; border-style: double; border-color:maroon; text-align: center;}
 #FaceCare
-{color: darkblue; text-decoration: underline; text-decoration-color: darkblue;}
+{color: palevioletred; text-decoration: underline; text-decoration-color: maroon;}
 #resource1
 {color: black;}
 #resource2
@@ -26,7 +26,7 @@ svg
 {color:crimson;}
 #tooltip
 {
-    position:absolute;
+    position: absolute;
     width:29px;
     height:auto;
     padding:10px;
@@ -49,17 +49,21 @@ display: none;
 #div1
 {
 float: left;
- height: 33%;
+ height: 5%;
+ width: 50%;
+position: relative;
 }
 #div2
 { float:left;
 width:10%;
     height:30%;
+    position: relative;
 }
 #div3
-{float: ;
-    width: 266px;
-    height: 40px;
+{float:left ;
+    width: 50%;
+    height: 5%;
+    position: relative;
 }
 path
 {
@@ -102,10 +106,37 @@ path
     border-color:maroon;
     padding: 10px;
 }
-path2
-{
-    stroke:gray;
-    fill:none;
-    stroke-width:3;
+#db
+{ 
+     text-align: center;
+    color: palevioletred;
+    border: 3px;
+    border-style: solid;
+    border-color:maroon;
+    padding: 1px;
 }
-    
+#h1
+{ text-decoration: underline;
+}
+#links
+{float:left;
+    width: 50%;
+    height:100%;
+}
+#picture1
+{float: right;
+    width: 50%;
+    height:inherit;
+   
+}
+#bottom1
+{
+    float:left;
+    width:100%;
+        height:inherit;
+}
+
+}
+#FaceCare
+{ text-align: center;
+}

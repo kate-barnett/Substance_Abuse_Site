@@ -120,7 +120,7 @@ var drawLabels = function(graph,margins)
         .classed("label",true)
         .attr("text-anchor","middle")
         .attr("x", margins.left+(graph.width/2))
-        .attr("y", margins.top+graph.height/1.0+(margins.bottom))
+        .attr("y", margins.top+graph.height/0.9+(margins.bottom))
         .attr("transform", "translate(,"+(margins.top+(graph.height))+")")
 }
 var initGraph = function(overdoseData)
@@ -129,13 +129,13 @@ var initGraph = function(overdoseData)
     var screen = {width:800, height:400};
     
    
-    var margins = {top:20,bottom:20,left:80,right:5};
+    var margins = {top:20,bottom:30,left:80,right:5};
     
    
     var graph = 
     {
-        width:screen.width-margins.left-margins.right,
-        height:screen.height/1.2-margins.top-margins.bottom,
+        width:screen.width/1.5-margins.left-margins.right,
+        height:screen.height/1.5-margins.top-margins.bottom,
     }
     
     
@@ -176,14 +176,14 @@ var initGraph2= function (ageGroup2)
 {
    var screen = {width: 800, height: 400}
     
-    var margins = {left:80, right:5, top:40, bottom: 60}
+    var margins = {left:80, right:5, top:40, bottom: 70}
     
     
     
     var graph2 = 
         {
-            width:screen.width/2-margins.left-margins.right,
-            height:screen.height/1.2 - margins.bottom
+            width:screen.width/2.5-margins.left-margins.right,
+            height:screen.height/1.5 - margins.bottom
         }
     
  
@@ -302,7 +302,7 @@ var drawLabels2 = function(graph,margins)
         .attr("transform","translate(20,"+ 
               (margins.top+(graph.height/2))+")")
         .append("text")
-        .text("# of those using")
+        .text("% of those using")
         .classed("label",true)
         .attr("text-anchor","middle")
         .attr("transform","rotate(270)")
@@ -323,13 +323,13 @@ var initGraph3 = function(compareData)
     var screen = {width:800, height:400};
     
    
-    var margins = {top:40,bottom:40,left:80,right:5};
+    var margins = {top:30,bottom:40,left:80,right:5};
     
    
     var graph = 
     {
-        width:screen.width-margins.left-margins.right,
-        height:screen.height/1.2-margins.top-margins.bottom,
+        width:screen.width/1.5-margins.left-margins.right,
+        height:screen.height/1.5-margins.top-margins.bottom,
     }
     
     
