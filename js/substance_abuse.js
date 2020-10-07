@@ -1,4 +1,4 @@
-var ageGroupPromise= d3.csv("../csv/ageGroupData.csv")
+var heroinComparePromise= d3.csv("../csv/HeroinCompare.csv")
 
 var ageGroup2Promise= d3.csv("../csv/ageGroupData2Final.csv")
 
@@ -115,11 +115,19 @@ var drawLabels = function(graph,margins)
         .classed("label",true)
         .attr("text-anchor","middle")
         .attr("transform","rotate(270)")
+    
+    labels.append("text")
+        .text("Year")
+        .classed("label",true)
+        .attr("text-anchor","middle")
+        .attr("x", margins.left+(graph.width/2))
+        .attr("y", margins.top+graph.height/1.0+(margins.bottom))
+        .attr("transform", "translate(,"+(margins.top+(graph.height))+")")
 }
 var initGraph = function(overdoseData)
 {
     
-    var screen = {width:800, height:250};
+    var screen = {width:800, height:400};
     
    
     var margins = {top:20,bottom:20,left:80,right:5};
@@ -167,7 +175,7 @@ var initGraph = function(overdoseData)
 
 var initGraph2= function (ageGroup2)
 {
-   var screen = {width: 800, height: 250}
+   var screen = {width: 800, height: 400}
     
     var margins = {left:80, right:5, top:40, bottom: 60}
     
@@ -200,7 +208,7 @@ var initGraph2= function (ageGroup2)
         .range([graph2.height,0])
     
     var colorScale= d3.scaleOrdinal()
-        .range(["red","pink"]);
+        .range(["maroon","pink"]);
     
   
 
@@ -305,17 +313,18 @@ var drawLabels2 = function(graph,margins)
         .classed("label",true)
         .attr("text-anchor","middle")
         .attr("x", margins.left+(graph.width/2))
-        .attr("y", margins.top+graph.height/1.2+(margins.bottom))
+        .attr("y", margins.top+graph.height/1.1+(margins.bottom))
         .attr("transform", "translate(,"+(margins.top+(graph.height))+")")
     
 }
+
 var initGraph3 = function(compareData)
 {
     
-    var screen = {width:800, height:250};
+    var screen = {width:800, height:400};
     
    
-    var margins = {top:20,bottom:20,left:80,right:5};
+    var margins = {top:40,bottom:40,left:80,right:5};
     
    
     var graph = 
@@ -356,25 +365,25 @@ var initGraph3 = function(compareData)
     drawLabels3(graph,margins, target);
     
     drawPlot2(compareData,target,xScale,yScale)
+    
+    drawLegend(graph,margins)
 }
 var drawLines2 = function(compareData,target,
               xScale,yScale)
 {
     
-    var lineGenerator = d3.line()
-        .x(function(compareData,i) { return xScale(i);})
-        .y(function(compareData)   { return yScale(compareData);})
+    var lineGenerator1 = d3.line()
+        .x(function(compareData) { return xScale(compareData.year);})
+        .y(function(compareData)   { return yScale(compareData.overdose_deaths);})
     
+           
     
-    var lines = d3.select("#graph3")
-        .select(".graph")
-        .selectAll("g")
-        .data(compareData)
-        .enter()
-        .append("g")
-        .classed("line",true)
-        .attr("fill","none")
-        .on("mouseenter", function(compareData)
+     d3.select("#graph3")    
+    .select(".graph")
+    .append("path")
+        .datum(compareData)
+        .attr("d",lineGenerator1)
+          .on("mouseenter", function(compareData)
             {
                 var xPos= d3.event.pageX;
                 var yPos=
@@ -385,34 +394,37 @@ var drawLines2 = function(compareData,target,
             .style("top",yPos+"px")
             .style("left",xPos+"px")
             .text(compareData.overdose_deaths)
-            .text(compareData.suicide_deaths)
+     })  
     
-            
-        
+         var lineGenerator2 = d3.line()
+        .x(function(compareData) { return xScale(compareData.year);})
+        .y(function(compareData)   { return yScale(compareData.suicide_deaths);})
     
-    lines.append("path")
-        .datum(function(compareData) 
-            { return compareData.overdose_deaths;})
-        .attr("d",lineGenerator);
-})
-   
-        lines.append("path")
-                .datum(function(compareData)
-                       {
-                return compareData.suicide_deaths
-    })
-                       
+           
     
-    
-    d3.select("#graph1")    
+     d3.select("#graph3")    
     .select(".graph")
     .append("path")
         .datum(compareData)
-        .attr("d",lineGenerator);
+        .attr("d",lineGenerator2)
+          .on("mouseenter", function(compareData)
+            {
+                var xPos= d3.event.pageX;
+                var yPos=
+                d3.event.pageY;
+            
+        d3.select("#tooltip")
+            .classed("hidden", false)
+            .style("top",yPos+"px")
+            .style("left",xPos+"px")
+            .text(compareData.suicide_deaths)
+     })  
+    
+    
 }
 var drawPlot2= function(compareData,target,xScale,yScale)
 {
-    target
+     target.append("g")
     .selectAll("circle")
     .data(compareData)
     .enter()
@@ -423,12 +435,9 @@ var drawPlot2= function(compareData,target,xScale,yScale)
     })
     .attr("cy", function (compareData)
           {
-            return yScale(compareData.suicice_deaths)
+            return yScale(compareData.overdose_deaths)
     })
-    .attr("cy", function(compareData)
-          {
-            return 
-            yScale(compareData.overdose_deaths)
+    
     .attr("r",3)
     .on("mouseenter", function(compareData)
             {
@@ -440,12 +449,46 @@ var drawPlot2= function(compareData,target,xScale,yScale)
             .classed("hidden", false)
             .style("top",yPos+"px")
             .style("left",xPos+"px")
-            .text(compareData.suicide_deaths)
+          
             .text(compareData.overdose_deaths)
             
 })
+
+    target.append("g")
+    .selectAll("circle")
+    .data(compareData)
+    .enter()
+    .append("circle")
+    .attr("cx", function(compareData)
+          {
+            return xScale(compareData.year);
+    })
+    .attr("cy", function (compareData)
+          {
+            return yScale(compareData.suicide_deaths)
+    })
+    
+    .attr("r",3)
+    .attr("fill","palevioletred")
+    .on("mouseenter", function(compareData)
+            {
+                var xPos= d3.event.pageX;
+                var yPos=
+                d3.event.pageY;
+            
+        d3.select("#tooltip")
+            .classed("hidden", false)
+            .style("top",yPos+"px")
+            .style("left",xPos+"px")
+          
+            .text(compareData.suicide_deaths)
+            
 })
+
+    
 }
+
+
           
     
 
@@ -458,7 +501,7 @@ var drawAxis3 = function(graph3,margins,xScale,yScale)
         .append("g")
         
     axes.append("g")
-        .attr("transform", "translate("+margins.left+","+(margins.top+graph3.height/1)+")") 
+        .attr("transform", "translate("+margins.left+","+(margins.top+graph3.height)+")") 
         
         .call(xAxis)
         
@@ -476,7 +519,7 @@ var drawLabels3 = function(graph,margins)
         .classed("labels",true)
         
     labels.append("text")
-        .text("Comparison of Suicide Mortality and Overdose Mortality")
+        .text("Comparison of Suicide Mortality and Overdose Mortality in Kentucky")
         .classed("title",true)
         .attr("text-anchor","middle")
         .attr("x",margins.left+(graph.width/2.2))
@@ -496,16 +539,348 @@ var drawLabels3 = function(graph,margins)
         .classed("label",true)
         .attr("text-anchor","middle")
         .attr("x", margins.left+(graph.width/2))
-        .attr("y", margins.top+graph.height/1.2+(margins.bottom/1.3))
+        .attr("y", margins.top+graph.height/0.9+(margins.bottom/1.3))
         .attr("transform", "translate(,"+(margins.top+(graph.height))+")")
     
 }
+
+var drawLegend = function(graphDim,margins)
+{
+    var legend = d3.select("#graph3")
+                    .append("g")
+                    .classed("legend", true)
+                    .attr("transform", "translate("+(margins.left)+","+(margins.top)+")");
+    
+    var categories = [
+       {
+           class:"suicide_deaths",
+           name:"suicide deaths"
+       },
+       {
+           class:"overdose_deaths",
+           name:"overdose deaths"
+       }
+    ]
+    
+    var entries = legend.selectAll("g")
+        .data(categories)
+        .enter()
+        .append("g")
+        .classed("legendEntry",true)
+        .attr("class", function(category)
+        {
+            return category.class
+        })
+        .attr("transform", function(category,index)
+        {
+           return "translate(0,"+(index*20)+")";
+        })
+    
+    
+        
+    entries.append("circle")
+            .attr("cx",8)
+            .attr("cy",5)
+            .attr("r", 5)
+            .attr("class", function(stat)
+            {
+                return stat.class
+            })
+    
+    entries.append("text")
+            .text(function(category)
+            {
+                return category.name
+            })
+            .attr("x",15)
+            .attr("y",10)  
+    
+}
+
+var initGraph4 = function(heroinCompare)
+{
+    
+    var screen = {width:800, height:400};
+    
+   
+    var margins = {top:40,bottom:40,left:80,right:5};
+    
+   
+    var graph = 
+    {
+        width:screen.width-margins.left-margins.right,
+        height:screen.height/1.2-margins.top-margins.bottom,
+    }
+    
+    
+    d3.select("#graph4")
+        .attr("width",screen.width)
+        .attr("height",screen.height)
+    
+    
+    var target = d3.select("#graph4")
+        .append("g")
+        .classed("graph",true)
+        .attr("transform","translate("+margins.left+","+
+             margins.top+")");
+     
+    var xScale = d3.scaleLinear()
+        .domain([2004,2011])
+        .range([0,graph.width])
+ 
+   
+
+                      
+    var yScale = d3.scaleLinear()
+        .domain([100,7000])
+        .range([graph.height,0])
+    
+    
+    drawAxis4(graph,margins,xScale,yScale);
+    
+    drawLines3(heroinCompare,target,xScale,yScale);
+     
+    
+    drawLabels4(graph,margins, target);
+    
+    drawPlot3(heroinCompare,target,xScale,yScale)
+    
+    drawLegend2(graph3,margins)
+}
+var drawLines3 = function(heroinCompare,target,
+              xScale,yScale)
+{
+    
+    var lineGenerator1 = d3.line()
+        .x(function(heroinCompare) { return xScale(heroinCompare.year);})
+        .y(function(heroinCompare)   { return yScale(heroinCompare.ER_Heroin_VIsits);})
+    
+           
+    
+     d3.select("#graph4")    
+    .select(".graph")
+    .append("path")
+        .datum(heroinCompare)
+        .attr("d",lineGenerator1)
+          .on("mouseenter", function(heroinCompare)
+            {
+                var xPos= d3.event.pageX;
+                var yPos=
+                d3.event.pageY;
+            
+        d3.select("#tooltip")
+            .classed("hidden", false)
+            .style("top",yPos+"px")
+            .style("left",xPos+"px")
+            .text(heroinCompare.ER_Heroin_VIsits)
+     })  
+    
+         var lineGenerator2 = d3.line()
+        .x(function(heroinCompare) { return xScale(heroinCompare.year);})
+        .y(function(heroinCompare)   { return yScale(heroinCompare.heroin_treatment_admissions);})
+    
+           
+    
+     d3.select("#graph4")    
+    .select(".graph")
+    .append("path")
+        .datum(heroinCompare)
+        .attr("d",lineGenerator2)
+          .on("mouseenter", function(heroinCompare)
+            {
+                var xPos= d3.event.pageX;
+                var yPos=
+                d3.event.pageY;
+            
+        d3.select("#tooltip")
+            .classed("hidden", false)
+            .style("top",yPos+"px")
+            .style("left",xPos+"px")
+            .text(heroinCompare.heroin_treatment_admissions)
+     })  
+    
+    
+}
+var drawPlot3= function(heroinCompare,target,xScale,yScale)
+{
+     target.append("g")
+    .selectAll("circle")
+    .data(heroinCompare)
+    .enter()
+    .append("circle")
+    .attr("cx", function(heroinCompare)
+          {
+            return xScale(heroinCompare.year);
+    })
+    .attr("cy", function (heroinCompare)
+          {
+            return yScale(heroinCompare.ER_Heroin_VIsits)
+    })
+    
+    .attr("r",3)
+    .on("mouseenter", function(heroinCompare)
+            {
+                var xPos= d3.event.pageX;
+                var yPos=
+                d3.event.pageY;
+            
+        d3.select("#tooltip")
+            .classed("hidden", false)
+            .style("top",yPos+"px")
+            .style("left",xPos+"px")
+          
+            .text(heroinCompare.ER_Heroin_VIsits)
+            
+})
+
+    target.append("g")
+    .selectAll("circle")
+    .data(heroinCompare)
+    .enter()
+    .append("circle")
+    .attr("cx", function(heroinCompare)
+          {
+            return xScale(heroinCompare.year);
+    })
+    .attr("cy", function (heroinCompare)
+          {
+            return yScale(heroinCompare.heroin_treatment_admissions)
+    })
+    
+    .attr("r",3)
+    .attr("fill","orchid")
+    .on("mouseenter", function(heroinCompare)
+            {
+                var xPos= d3.event.pageX;
+                var yPos=
+                d3.event.pageY;
+            
+        d3.select("#tooltip")
+            .classed("hidden", false)
+            .style("top",yPos+"px")
+            .style("left",xPos+"px")
+          
+            .text(heroinCompare.heroin_treatment_admissions)
+            
+})
+
+    
+}
+
+
+          
+    
+
+var drawAxis4 = function(graph4,margins,xScale,yScale)
+{
+   var xAxis= d3.axisBottom(xScale);
+   var yAxis= d3.axisLeft(yScale);
+    
+    var axes= d3.select("#graph4")
+        .append("g")
+        
+    axes.append("g")
+        .attr("transform", "translate("+margins.left+","+(margins.top+graph4.height/1)+")") 
+        
+        .call(xAxis)
+        
+ 
+    axes.append("g")
+        .attr("transform", "translate("+margins.left+","+(margins.top)+")") 
+       .call(yAxis)
+
+}
+
+var drawLabels4 = function(graph,margins)
+{
+        var labels = d3.select("#graph4")
+        .append("g")
+        .classed("labels",true)
+        
+    labels.append("text")
+        .text("Relationship Between Heroin ER Visits and Heroin Treatment Admissions in Kentucky")
+        .classed("title",true)
+        .attr("text-anchor","middle")
+        .attr("x",margins.left+(graph.width/2.2))
+        .attr("y",margins.top/2.2)
+     
+    labels.append("g")
+        .attr("transform","translate(20,"+ 
+              (margins.top+(graph.height/2))+")")
+        .append("text")
+        .text("# of individual")
+        .classed("label",true)
+        .attr("text-anchor","middle")
+        .attr("transform","rotate(270)")
+     
+    labels.append("text")
+        .text("Year")
+        .classed("label",true)
+        .attr("text-anchor","middle")
+        .attr("x", margins.left+(graph.width/2))
+        .attr("y", margins.top+graph.height/0.9+(margins.bottom/1.3))
+        .attr("transform", "translate(,"+(margins.top+(graph.height))+")")
+    
+}
+
+var drawLegend2 = function(graphDim,margins)
+{
+    var legend = d3.select("#graph4")
+                    .append("g")
+                    .classed("legend", true)
+                    .attr("transform", "translate("+(margins.left)+","+(margins.top)+")");
+    
+    var categories = [
+       {
+           class:"ER_Heroin_VIsits",
+           name:"Heroin Visits to ER"
+       },
+       {
+           class:"heroin_treatment_admissions",
+           name:"Heroin Treatment Admissions"
+       }
+    ]
+    
+    var entries = legend.selectAll("g")
+        .data(categories)
+        .enter()
+        .append("g")
+        .classed("legendEntry",true)
+        .attr("class", function(category)
+        {
+            return category.class
+        })
+        .attr("transform", function(category,index)
+        {
+           return "translate(0,"+(index*20)+")";
+        })
+    
+    
+        
+    entries.append("circle")
+            .attr("cx",8)
+            .attr("cy",5)
+            .attr("r", 5)
+            .attr("class", function(stat)
+            {
+                return stat.class
+            })
+    
+    entries.append("text")
+            .text(function(category)
+            {
+                return category.name
+            })
+            .attr("x",15)
+            .attr("y",10)  
+}
+
 var successFCN= function(values)
 {
    
     console.log("values", values);
    
-  var ageGroup= values[0];
+  var heroinCompare= values[0];
   var ageGroup2= values[1];
   var compareData= values [2];
   var overdoseData= values [3];
@@ -513,7 +888,7 @@ var successFCN= function(values)
 initGraph(values[3]);
 initGraph2(values[1]);
 initGraph3(values[2]);
-
+initGraph4(values[0]);
     
    
 
@@ -525,7 +900,7 @@ var failFCN= function(error)
     console.log("error", error);
 }
 
-var promises= [ageGroupPromise, ageGroup2Promise, compareDataPromise, overdosePromise];
+var promises= [heroinComparePromise, ageGroup2Promise, compareDataPromise, overdosePromise];
 
 Promise.all(promises)
 .then(successFCN,failFCN)

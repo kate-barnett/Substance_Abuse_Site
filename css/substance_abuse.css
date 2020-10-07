@@ -1,15 +1,15 @@
 #intro
-{color:cadetblue;}
+{color:palevioletred;}
 body
-{background-color: beige;}
+{background-color: lavenderblush;}
 #BannerKentucky
 {color:darkblue; width:inherit;height:inherit; border-bottom: 5px; padding-bottom: 5px; border-bottom-color: darkblue; border-bottom-style: solid; border-top: 5px; border-top-color: darkblue; border-top-style: solid; padding-top: 5px;}
 p
-{color:darkblue}
+{color:palevioletred}
 a
-{color:darkblue}
+{color:palevioletred}
 #WhyHeader
-{color:cadetblue;}
+{color:palevioletred;}
 #introp
 {width:inherit;height: inherit; border-bottom: 30px; padding-bottom: 5px; border-bottom-color: darkblue; border-bottom-style: double; border-top: 30px; border-top-color: darkblue; border-top-style: double; padding-top: 5px;}
 #FaceCare
@@ -57,7 +57,7 @@ width:10%;
     height:30%;
 }
 #div3
-{float: left;
+{float: ;
     width: 266px;
     height: 40px;
 }
@@ -66,5 +66,40 @@ path
     stroke:gray;
     fill:none;
     stroke-width:3;
+}
+.suicide_deaths
+{ fill: palevioletred;
+}
+
+.heroin_treatment_admissions
+{ fill:orchid;
+}
+#call
+{
+    text-align: center;
+    color: palevioletred;
+    border: 3px;
+    border-style: solid;
+    border-color:maroon;
+    padding: 1px;
+  
+}
+ #call2   
+{
+   
+    color: palevioletred;
+    border: 3px;
+    border-style: solid;
+    border-color:maroon;
+    padding: 1px;
+    position: absolute;
+}
+#why
+{
+    color:black;
+    border: 3px;
+    border-style:solid;
+    border-color:maroon;
+    padding: 10px;
 }
     
